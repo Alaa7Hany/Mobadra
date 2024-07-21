@@ -1,0 +1,20 @@
+services:
+  app:
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql
+      - MYSQL_URL=jdbc:mysql://mysql:3306/petclinic
+    depends_on:
+      - mysql
+  mysql:
+    container_name: pett-mysql
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_USER=petclinic
+      - MYSQL_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    volumes:
+      - petclinic-vol-mysql:/var/lib/mysql

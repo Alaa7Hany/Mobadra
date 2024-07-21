@@ -1,0 +1,20 @@
+services:
+  app:
+    environment:
+      - SPRING_PROFILES_ACTIVE=postgres
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/petclinic
+    depends_on:
+      - postgres
+  postgres:
+    container_name: pett-postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_ROOT_PASSWORD=
+      - POSTGRES_ALLOW_EMPTY_PASSWORD=true
+      - POSTGRES_USER=petclinic
+      - POSTGRES_PASSWORD=petclinic
+      - POSTGRES_DB=petclinic
+    volumes:
+      - petclinic-vol-postgres:/var/lib/postgresql/data
