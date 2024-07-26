@@ -1,0 +1,19 @@
+services:
+  app:
+#    container_name: pett-app
+    image: pett
+    build: .
+    deploy:
+      replicas: 5
+  nginx:
+    container_name: pett-nginx
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+volumes:
+  petclinic-vol-mysql:
+  petclinic-vol-postgres:
