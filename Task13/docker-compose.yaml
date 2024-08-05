@@ -1,7 +1,7 @@
 services:
   app:
     container_name: petclinic-app
-    image: task13-pet
+    image: jenkins-pet
     ports:
       - "99:8080"
     environment:
