@@ -4,4 +4,5 @@ following these steps to install nexus [How To Install Latest Sonatype Nexus 3 o
 but applying them using Ansible to install on localhost
 
 to run the playbook: `ansible-playbook -i inventory playbook.yaml --ask-become-pass`  
-`--ask-become-pass`: to provide user password to run with sudo privilege
+`--ask-become-pass`: to provide user password to run with sudo privilege  
+to start nexus run: `sudo systemctl start nexus`
