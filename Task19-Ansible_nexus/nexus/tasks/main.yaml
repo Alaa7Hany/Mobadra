@@ -1,0 +1,77 @@
+- name: apt update
+  apt:
+    update_cache: yes
+
+- name: nstall required utilities.
+  apt:
+    name: wget
+    state: present
+
+- name: install open JDK 8
+  apt:
+    name: openjdk-8-jdk
+    state: present
+    
+- name: create nexus directory
+  file:
+    path: "{{ app_directory }}"
+    state: directory
+
+- name: Check if nexus.tar.gz exists
+  stat:
+    path: "{{ app_directory }}/nexus.tar.gz"
+  register: nexus_file_tar
+
+- name: Download Nexus tarball
+  shell: wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+  when: not nexus_file_tar.stat.exists   
+  args:
+    chdir: "{{ app_directory }}"
+
+- name: Check if nexus exists
+  stat:
+    path: "{{ app_directory }}/nexus"
+  register: nexus_file     
+
+- name: untar nexus.tar.gz
+  unarchive: 
+    src: "{{ app_directory }}/nexus.tar.gz"
+    dest: "{{ app_directory }}" 
+  when: not nexus_file.stat.exists     
+
+- name: rename the file
+  shell: mv nexus-3* nexus
+  args:
+    chdir: "{{ app_directory }}"
+  when: not nexus_file.stat.exists      
+
+- name: add nexus user
+  user: 
+    name: nexus
+    state: present
+
+- name: change ownership of nexus to nexus 
+  file:
+    path: "{{ app_directory }}/nexus"
+    owner: nexus
+    group: nexus
+    recurse: yes
+
+- name: change ownership of sonatype-work to nexus
+  file: 
+    path: "{{ app_directory }}/sonatype-work"
+    owner: nexus
+    group: nexus
+    recurse: yes
+
+- name: Ensure run_as_user parameter is set to nexus
+  lineinfile:
+    path: "{{ app_directory }}/nexus/bin/nexus.rc"
+    regexp: '^#\s*run_as_user'
+    line: 'run_as_user="nexus"'
+    state: present
+
+- name: Create and copy nexus.service file    
+  template:
+    src: nexus.service
+    dest: /etc/systemd/system/nexus.service
