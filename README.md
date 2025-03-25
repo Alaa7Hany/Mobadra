@@ -1,1 +1,1 @@
-# This Repo is for Tasks of DEPI-DevOps Track 
+# This repository is for tasks from the DEPI-DevOps track
